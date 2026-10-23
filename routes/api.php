@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AddressController;
 
 Route::get('/ping', function () {
     return response()->json([
@@ -36,4 +37,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/cart/items/{cartItem}', [CartController::class, 'update']);
     Route::delete('/cart/items/{cartItem}', [CartController::class, 'destroy']);
     Route::delete('/cart', [CartController::class, 'clear']);
+
+        // ঠিকানা
+    Route::get('/addresses', [AddressController::class, 'index']);
+    Route::post('/addresses', [AddressController::class, 'store']);
+    Route::put('/addresses/{address}', [AddressController::class, 'update']);
+    Route::delete('/addresses/{address}', [AddressController::class, 'destroy']);
 });
