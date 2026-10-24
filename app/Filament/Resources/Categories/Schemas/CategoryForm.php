@@ -31,6 +31,7 @@ class CategoryForm
                     ->maxLength(255),
                 FileUpload::make('image')
                     ->image()
+                    ->disk('public')
                     ->directory('categories'),
                 Textarea::make('description')
                     ->label('বিবরণ')

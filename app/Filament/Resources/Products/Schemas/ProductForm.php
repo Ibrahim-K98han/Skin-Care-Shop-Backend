@@ -58,6 +58,7 @@ class ProductForm
                         FileUpload::make('thumbnail')
                             ->label('মূল ছবি')
                             ->image()
+                            ->disk('public')
                             ->directory('products')
                             ->columnSpanFull(),
                         Toggle::make('is_active')

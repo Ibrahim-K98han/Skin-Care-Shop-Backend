@@ -24,6 +24,7 @@ class BrandForm
                     ->maxLength(255),
                 FileUpload::make('logo')
                     ->image()
+                    ->disk('public')
                     ->directory('brands'),
                 TextInput::make('country')
                     ->label('দেশ'),
