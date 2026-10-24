@@ -107,6 +107,38 @@ class OrderService
         });
     }
 
+public function cancel(Order $order): Order
+{
+    return DB::transaction(function () use ($order) {
+        // অর্ডারটা লক করে নতুন করে আনা (একসাথে দুবার ক্যানসেল ঠেকাতে)
+        $order = Order::with('items')->lockForUpdate()->findOrFail($order->id);
+
+        if ($order->status === 'cancelled') {
+            throw ValidationException::withMessages([
+                'status' => ['অর্ডারটি আগেই বাতিল করা হয়েছে।'],
+            ]);
+        }
+
+        if (in_array($order->status, ['shipped', 'delivered'], true)) {
+            throw ValidationException::withMessages([
+                'status' => ['কুরিয়ারে পাঠানো বা ডেলিভারি হয়ে যাওয়া অর্ডার বাতিল করা যায় না।'],
+            ]);
+        }
+
+        // স্টক ফেরত
+        foreach ($order->items as $item) {
+            if ($item->product_variant_id) {
+                ProductVariant::where('id', $item->product_variant_id)
+                    ->increment('stock', $item->quantity);
+            }
+        }
+
+        $order->update(['status' => 'cancelled']);
+
+        return $order;
+    });
+}
+
     private function generateOrderNumber(): string
     {
         do {

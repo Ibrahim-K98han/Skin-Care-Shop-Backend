@@ -32,6 +32,11 @@ class OrderResource extends Resource
     return false;
 }
 
+public static function canEdit(\Illuminate\Database\Eloquent\Model $record): bool
+{
+    return $record->status !== 'cancelled';
+}
+
     public static function infolist(Schema $schema): Schema
     {
         return OrderInfolist::configure($schema);
